@@ -42,14 +42,16 @@ end)
 -- Events
 
 RegisterNetEvent('MapEdit:SpawnObject', function(model, coords, heading, save)
-    local obj = CreateObjectNoOffset(model, coords.x, coords.y, coords.z, true, true) -- Create the object
-    while not DoesEntityExist(obj) do
-        Wait(10)
-    end
-    SetEntityHeading(obj, heading)
-    FreezeEntityPosition(obj, true)
-    if obj and save then
+    if save then
+        TriggerClientEvent('MapEdit:CreateObject_cl', -1, model, coords, heading)
         AddObjectToSave(model, coords, heading) -- If the object was successfully created, save it
+    else
+        local obj = CreateObjectNoOffset(model, coords.x, coords.y, coords.z, true, true) -- Create the object
+        while not DoesEntityExist(obj) do
+            Wait(10)
+        end
+        SetEntityHeading(obj, heading)
+        FreezeEntityPosition(obj, true)
     end
 end)
 
@@ -123,7 +125,7 @@ RemoveObjectFromSave = function(coords)
             if math < moe and math > (0 - moe) then
                 table.remove(array, k)                                         -- If coords are close enough then remove from table
                 
-                local file = io.open('objects.json', 'w+')              -- Put the array with the new object back into the json file
+                local file = io.open(path .. 'objects.json', 'w+')              -- Put the array with the new object back into the json file
                 file:write(json.encode(array))
                 io.close(file)
                 return

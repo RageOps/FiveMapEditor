@@ -117,9 +117,15 @@ StartEditor = function()
 
             if IsDisabledControlJustReleased(1, 38) then -- E
                 if placeMode then
-                    CreatePermObject(editorModel, editorCoords, editorHeading)
+                    TriggerServerEvent('MapEdit:SpawnObject', editorModel, editorCoords, editorHeading, true)
                 else
                     local netid = NetworkGetNetworkIdFromEntity(entity)
+                    if not netid then
+                        local ent = entity
+                        SetEntityAsMissionEntity(ent, 1, 1)
+                        DeleteObject(ent)
+                        SetEntityAsNoLongerNeeded(ent)
+                    end
                     TriggerServerEvent('MapEdit:DeleteObject', netid)
                 end
             end
@@ -138,6 +144,7 @@ StartEditor = function()
                     DeleteObject(ent)
                     SetEntityAsNoLongerNeeded(ent)
                     TriggerServerEvent('MapEdit:AddObjectToRemove', entModel, entCoords)
+                    print(entModel)
                 end 
             end
 
@@ -176,8 +183,11 @@ CreateTempObject = function(model, coords, heading)
 end
 
 CreatePermObject = function(model, coords, heading)
-    TriggerServerEvent('MapEdit:SpawnObject', model, coords, heading, true)
+    local obj = CreateObjectNoOffset(model, coords.x, coords.y, coords.z, true, true) -- client sided creation because it's less prone to breaking
+    SetEntityHeading(obj, heading)
+    FreezeEntityPosition(obj, true)
 end
+RegisterNetEvent('MapEdit:CreateObject_cl', CreatePermObject)
 
 RayCastGamePlayCamera = function(distance) -- from qb-core
     local cameraRotation = GetGameplayCamRot()
