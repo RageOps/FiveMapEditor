@@ -1,3 +1,3 @@
-data/**
-addon-maps/**
-stream/**
+*.xml
+*.ymap
+*.json
