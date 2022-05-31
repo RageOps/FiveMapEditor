@@ -135,18 +135,20 @@ StartEditor = function()
                 count = 0
             end
 
-            if DeleteObjectMode then
-                if IsDisabledControlJustPressed(1, 45) then -- R
-                    local ent = entity
-                    local entModel = GetEntityModel(ent)
-                    local entCoords = GetEntityCoords(ent)
+            if IsDisabledControlJustPressed(1, 45) then -- R
+                local ent = entity
+                local entModel = GetEntityModel(ent)
+                local entCoords = GetEntityCoords(ent)
+                print(entModel)
+                if DeleteObjectMode then
                     SetEntityAsMissionEntity(ent, 1, 1)
                     DeleteObject(ent)
                     SetEntityAsNoLongerNeeded(ent)
                     TriggerServerEvent('MapEdit:AddObjectToRemove', entModel, entCoords)
-                    print(entModel)
-                end 
-            end
+                else
+                    print(entCoords)
+                end
+            end 
 
             if IsDisabledControlJustPressed(1, 191) then -- Enter
                 GetUserInput()
