@@ -50,6 +50,16 @@ end)
 
 -- Events
 
+RegisterNetEvent('MapEdit:GetIsAllowed', function()
+    if IsPlayerAceAllowed(source, 'command') then -- Checks if the source has permission to run restricted commands
+        TriggerClientEvent('MapEdit:ClientConfirm', source)
+    end
+end)
+
+RegisterNetEvent('MapEdit:GetPlacedObjects', function()
+    TriggerClientEvent('MapEdit:SendPlacedObjects', source, objects)
+end)
+
 RegisterNetEvent('MapEdit:SpawnObject', function(model, coords, heading, save)
     if save then
         TriggerClientEvent('MapEdit:CreateObject_cl', -1, model, coords, heading)

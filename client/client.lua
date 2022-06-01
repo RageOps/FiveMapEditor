@@ -18,11 +18,12 @@ local DeleteObjectMode = false -- Change to true if you want to be able to perma
 
 -- Commands
 
-RegisterCommand('addprop', function(source, args) -- Legacy but still usable
-    SpawnObject(args[1])
-end)
-
 RegisterCommand('edit', function(source, args)
+    TriggerServerEvent('MapEdit:GetIsAllowed')
+end)
+RegisterKeyMapping('edit', 'Toggle the Map Editor', 'keyboard', 'U')
+
+RegisterNetEvent('MapEdit:ClientConfirm', function()
     if not mapCreating then
         mapCreating = true
         if not editorModel then
@@ -33,8 +34,11 @@ RegisterCommand('edit', function(source, args)
         mapCreating = false
     end
 end)
-RegisterKeyMapping('edit', 'Toggle the Map Editor', 'keyboard', 'U')
 
+RegisterCommand('toggleRemoveMode', function()
+    DeleteObjectMode = not DeleteObjectMode
+    print(DeleteObjectMode)
+end)
 
 -- Functions
 
