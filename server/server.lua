@@ -1,4 +1,5 @@
 path = GetResourcePath(GetCurrentResourceName()) .. '/data/'
+objects = {}
 
 if not io.open(path .. 'objects.json') then
     local file = io.output(path .. 'objects.json') -- Create the objects.json file if it is not already created
@@ -9,8 +10,8 @@ if not io.open(path .. 'removables.json') then
     io.close(file)
 end
 
--- Create Objects from save file
-Citizen.CreateThread(function()
+-- Create Objects in a serversided manner from save file
+--[[Citizen.CreateThread(function()
     local ped
     local fire = false
     repeat -- Wait until a player exists on the server to create the objects since CreateObject is RPC
@@ -37,7 +38,15 @@ Citizen.CreateThread(function()
             local model, coords, heading = v[1], vector3(v[2].x, v[2].y, v[2].z), vector3(v[3].x, v[3].y, v[3].z) -- heading goes in as vector for some reason
             TriggerEvent('MapEdit:SpawnObject', model, coords, heading, false) -- False since all of these objects are already in the save file
         end
+end)]]
+
+Citizen.CreateThread(function()
+    local file = io.open(path .. 'objects.json', 'r+')
+    local data = file:read('a')
+    io.close(file)
+    objects = json.decode(data)
 end)
+
 
 -- Events
 
